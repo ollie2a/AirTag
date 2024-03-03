@@ -3,7 +3,7 @@ import json
 import os
 from datetime import datetime
 from collections import defaultdict
-
+import pymongo
 
 class LogManager(object):
     def __init__(self, findmy_files, store_keys, timestamp_key, log_folder,
@@ -25,6 +25,9 @@ class LogManager(object):
 
         self._keys = sorted(list(
             set(self._name_keys).union(set(self._store_keys))))
+
+        conn = pymongo.MongoClient("mongodb://raspberrypi.local:27017/", connect=False)
+        self.location_db = conn["airtag"]["locations"]
 
     def _process_item(self, item):
         item_dict = {}
@@ -61,8 +64,36 @@ class LogManager(object):
                                 'Access has been granted to Terminal.')
         return items_dict
 
+    def trans_tojson(self, data):
+        json_data = {}
+        complex_structs = {}
+        for key in data.keys():
+            if "|" in key:
+                fields = key.split("|")
+                complex_struct = complex_structs.get(fields[0])
+                if complex_struct is None:
+                    complex_struct = {}
+                complex_struct[fields[1]] = data[key]
+                complex_structs[fields[0]] = complex_struct
+            else:
+                value = data[key]
+                if value == "NULL":
+                    value = None
+                json_data[key] = value
+        for key in complex_structs:
+            json_data[key] = complex_structs[key]
+
+        json_data["date"] = datetime.fromtimestamp(json_data["location"]["timeStamp"] / 1000.0)
+        return json_data
+
     def _save_log(self, name, data):
         log_folder = self._log_folder
+
+        if data['location|timeStamp'] != "NULL":
+            data_tojson = self.trans_tojson(data)
+            # update mongodb
+            self.location_db.update_one(filter={"serialNumber":data_tojson["serialNumber"],"date":data_tojson["date"]}, update={"$set":data_tojson},upsert=True)
+
         if not self._no_date_folder:
             log_folder = os.path.join(
                 log_folder, datetime.now().strftime(self._date_format))

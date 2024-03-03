@@ -15,6 +15,35 @@ from lib.constants import TIME_FORMAT
 from lib.constants import DATE_FORMAT
 from lib.log_manager import LogManager
 
+# 	serialnumber=$(jq ".[$j].serialNumber" "$ITEMS_FILE")
+# 	name=$(jq ".[$j].name" "$ITEMS_FILE")
+# 	producttype=$(jq ".[$j].productType.type" "$ITEMS_FILE")
+# 	productindentifier=$(jq ".[$j].productType.productInformation.productIdentifier" "$ITEMS_FILE")
+# 	vendoridentifier=$(jq ".[$j].productType.productInformation.vendorIdentifier" "$ITEMS_FILE")
+# 	antennapower=$(jq ".[$j].productType.productInformation.antennaPower" "$ITEMS_FILE")
+# 	systemversion=$(jq ".[$j].systemVersion" "$ITEMS_FILE")
+# 	batterystatus=$(jq ".[$j].batteryStatus" "$ITEMS_FILE")
+# 	locationpositiontype=$(jq ".[$j].location.positionType" "$ITEMS_FILE")
+# 	locationlatitude=$(jq ".[$j].location.latitude" "$ITEMS_FILE")
+# 	locationlongitude=$(jq ".[$j].location.longitude" "$ITEMS_FILE")
+# 	locationtimestamp=$(jq ".[$j].location.timeStamp" "$ITEMS_FILE")
+# 	locationverticalaccuracy=$(jq ".[$j].location.verticalAccuracy // 0" "$ITEMS_FILE")
+# 	locationhorizontalaccuracy=$(jq ".[$j].location.horizontalAccuracy // 0" "$ITEMS_FILE")
+# 	locationfloorlevel=$(jq ".[$j].location.floorlevel // 0" "$ITEMS_FILE")
+# 	locationaltitude=$(jq ".[$j].location.altitude // 0" "$ITEMS_FILE")
+# 	locationisinaccurate=$(jq ".[$j].location.isInaccurate" "$ITEMS_FILE" | awk '{ print "\""$0"\"" }')
+# 	locationisold=$(jq ".[$j].location.isOld" "$ITEMS_FILE" | awk '{ print "\""$0"\"" }' )
+# 	locationfinished=$(jq ".[$j].location.locationFinished" "$ITEMS_FILE" | awk '{ print "\""$0"\"" }' )
+# 	addresslabel=$(jq ".[$j].address.label // \"\"" "$ITEMS_FILE")
+# 	addressstreetaddress=$(jq ".[$j].address.streetAddress // \"\"" "$ITEMS_FILE")
+# 	addresscountrycode=$(jq ".[$j].address.countryCode // \"\"" "$ITEMS_FILE")
+# 	addressstatecode=$(jq ".[$j].address.stateCode // \"\"" "$ITEMS_FILE")
+# 	addressadministrativearea=$(jq ".[$j].address.administrativeArea // \"\"" "$ITEMS_FILE")
+# 	addressstreetname=$(jq ".[$j].address.streetName // \"\"" "$ITEMS_FILE")
+# 	addresslocality=$(jq ".[$j].address.locality // \"\"" "$ITEMS_FILE")
+# 	addresscountry=$(jq ".[$j].address.country // \"\"" "$ITEMS_FILE")
+# 	addressareaofinteresta=$(jq ".[$j].address.areaOfInterest[0] // \"\"" "$ITEMS_FILE")
+# 	addressareaofinterestb=$(jq ".[$j].address.areaOfInterest[1] // \"\"" "$ITEMS_FILE")
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -47,6 +76,14 @@ def parse_args():
                  f'location{JSON_LAYER_SEPARATOR}isInaccurate',
                  f'location{JSON_LAYER_SEPARATOR}isOld',
                  f'location{JSON_LAYER_SEPARATOR}locationFinished',
+                 f'address{JSON_LAYER_SEPARATOR}label',
+                 f'address{JSON_LAYER_SEPARATOR}streetAddress',
+                 f'address{JSON_LAYER_SEPARATOR}countryCode',
+                 f'address{JSON_LAYER_SEPARATOR}stateCode',
+                 f'address{JSON_LAYER_SEPARATOR}administrativeArea',
+                 f'address{JSON_LAYER_SEPARATOR}streetName',
+                 f'address{JSON_LAYER_SEPARATOR}locality',
+                 f'address{JSON_LAYER_SEPARATOR}country',
                  'id', 'deviceDiscoveryId', 'baUUID', 'serialNumber',
                  'identifier', 'prsId',
                  'deviceModel', 'modelDisplayName', 'deviceDisplayName'],
